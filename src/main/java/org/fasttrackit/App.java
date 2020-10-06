@@ -24,9 +24,9 @@ public class App
 //
 //        taskRepository.createTask(request);
 
-taskRepository.deleteTask(1);
+//taskRepository.deleteTask(1);
 
-
-
+ //taskRepository.updateTask(2, request);
+        System.out.println(taskRepository.getTasks());
     }
 }

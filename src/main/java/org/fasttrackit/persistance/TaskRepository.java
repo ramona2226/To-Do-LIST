@@ -1,11 +1,13 @@
 package org.fasttrackit.persistance;
 
+import org.fasttrackit.domain.Task;
 import org.fasttrackit.domain.config.DataBaseConfiguration;
 import org.fasttrackit.transfer.CreateTaskRequest;
+import org.fasttrackit.transfer.UpdateTaskRequest;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //DAO (Data Acces Object)
 
@@ -15,17 +17,17 @@ public class TaskRepository {
 // preventing SQL injection useing placeholders and PreparedStatement
         String sql = "INSERT INTO task (description, deadline) VALUES (?, ?)";
 
-      // try with resources
-                try (
-            PreparedStatement preparedStatement = DataBaseConfiguration.getConnection().prepareStatement(sql)) {
+        // try with resources
+        try (
+                PreparedStatement preparedStatement = DataBaseConfiguration.getConnection().prepareStatement(sql)) {
 
-preparedStatement.setString(1, request.getDescription());
-preparedStatement.setDate(2, Date.valueOf(request.getDeadline()));
+            preparedStatement.setString(1, request.getDescription());
+            preparedStatement.setDate(2, Date.valueOf(request.getDeadline()));
 
 
-preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-                }
+        }
 
     }
 
@@ -33,12 +35,60 @@ preparedStatement.executeUpdate();
 
         String sql = "DELETE FROM task WHERE id = ?";
 
-       try (PreparedStatement preparedStatement = DataBaseConfiguration.getConnection().prepareStatement(sql)) {
-           preparedStatement.setLong(1, id);
+        try (PreparedStatement preparedStatement = DataBaseConfiguration.getConnection().prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
 
-           preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+        }
+
+    }
+
+    public void updateTask(long id, UpdateTaskRequest request) throws SQLException {
+
+        String sql = "UPDATE task SET done = ? WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = DataBaseConfiguration.getConnection().prepareStatement(sql)) {
+            preparedStatement.setBoolean(1, request.isDone());
+
+
+            preparedStatement.setLong(2, id);
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public List<Task> getTasks() throws SQLException {
+
+        String sql = " SELECT id, description, deadline, done FROM task";
+
+
+        List<Task> tasks = new ArrayList<>();
+
+
+        try (Statement statement = DataBaseConfiguration.getConnection().createStatement()) {
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+       while (resultSet.next()) {
+           Task task = new Task();
+           task.setId(resultSet.getLong("id"));
+task.setDescription((resultSet.getString("description")));
+           task.setDeadline(resultSet.getDate("daadline").toLocalDate());
+           task.setDone((resultSet.getBoolean("done")));
+
+           tasks.add(task);
+
        }
+        }
+return tasks;
+
 
 
     }
 }
+
+
+
+
+
+
