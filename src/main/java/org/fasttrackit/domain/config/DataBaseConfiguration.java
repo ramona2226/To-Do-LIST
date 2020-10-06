@@ -18,7 +18,7 @@ public class DataBaseConfiguration {
 
 
             InputStream inputStream = DataBaseConfiguration.class.getClassLoader()
-                    .getResourceAsStream("application.proprieties");
+                    .getResourceAsStream("application.properties");
 
 
             if (inputStream == null) {

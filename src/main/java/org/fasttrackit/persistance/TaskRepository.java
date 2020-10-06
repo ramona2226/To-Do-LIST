@@ -28,4 +28,17 @@ preparedStatement.executeUpdate();
                 }
 
     }
+
+    public void deleteTask(long id) throws SQLException {
+
+        String sql = "DELETE FROM task WHERE id = ?";
+
+       try (PreparedStatement preparedStatement = DataBaseConfiguration.getConnection().prepareStatement(sql)) {
+           preparedStatement.setLong(1, id);
+
+           preparedStatement.executeUpdate();
+       }
+
+
+    }
 }
