@@ -73,7 +73,7 @@ public class TaskRepository {
            Task task = new Task();
            task.setId(resultSet.getLong("id"));
 task.setDescription((resultSet.getString("description")));
-           task.setDeadline(resultSet.getDate("daadline").toLocalDate());
+           task.setDeadline(resultSet.getDate("deadline").toLocalDate());
            task.setDone((resultSet.getBoolean("done")));
 
            tasks.add(task);
