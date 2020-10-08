@@ -4,6 +4,7 @@ import org.fasttrackit.domain.Task;
 import org.fasttrackit.domain.config.ObjectMapperConfiguration;
 import org.fasttrackit.service.TaskService;
 import org.fasttrackit.transfer.CreateTaskRequest;
+import org.fasttrackit.transfer.UpdateTaskRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,9 +26,7 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // D.R.Y (DON`T REPEAT YOURSELF)
-        ;
-
+        // D.R.Y (DON`T REPEAT YOURSELF) ;
 
         CreateTaskRequest request = ObjectMapperConfiguration.getObjectMapper().readValue(req.getReader(), CreateTaskRequest.class);
 
@@ -50,7 +49,20 @@ public class TaskServlet extends HttpServlet {
         } catch (SQLException e) {
             resp.sendError(500, e.getMessage());
         }
+    }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idAsString = req.getParameter("id");
 
+       UpdateTaskRequest request = ObjectMapperConfiguration.getObjectMapper()
+                .readValue(req.getReader(), UpdateTaskRequest.class);
+
+        try {
+            taskService.updateTask(Long.parseLong(idAsString), request);
+        } catch (SQLException e) {
+            resp.sendError(500, e.getMessage());
+
+        }
     }
 }
